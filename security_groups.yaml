@@ -1,0 +1,30 @@
+
+# vpc_id 省略時はデフォルト
+# vpc_id: VPC_ID
+
+security_groups:
+
+   # 全ての出力を許可する
+   - GroupName:   'SG1:Permit All Outbounds'
+
+   # 全てのVPC内部通信の受信を許可する
+   - GroupName:   'SG1:VPC Networks'
+     ingress:
+        - { proto: all, port: all,  cidr: 172.31.0.0/16 }
+    # デフォルトではすべての出力が有効になっている
+    # 以下の設定ですべて削除できる
+     egress_revoke_all: true
+
+   # 自分のIPアドレスからのみSSH接続を許可する
+   - GroupName:   'SG1:Admin SSH'
+     ingress:
+        - { proto: tcp, port: 22, cidr: 'YOUR_IP_ADDRESS' }
+     egress_revoke_all: true
+  
+   # Webサービスを公開する 
+   - GroupName:   'SG1:Web Services'
+     ingress:
+        - { proto: tcp, port: 80,  cidr: 0.0.0.0/0 }
+        - { proto: tcp, port: 443, cidr: 0.0.0.0/0 }
+     egress_revoke_all: true
+
